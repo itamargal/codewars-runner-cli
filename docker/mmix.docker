@@ -21,12 +21,25 @@ ENV PATH /opt/mmix/bin:$PATH
 # # NOTE: zMMIX not compiling!
 # # Download, build and install zMMIX unit testing suite (https://github.com/zBaitu/zMMIX)
 # RUN cd /opt/mmix \
-#     && git "clone https://github.com/zBaitu/zMMIX.git" \
+#     && git clone "https://github.com/zBaitu/zMMIX.git" \
 #     && mkdir zMMIX/build \
 #     && cd zMMIX/build \
 #     && cmake .. \
 #     && make \
 #     && make install
+
+# Download and install testgen binary
+RUN curl --silent "http://mmix.cs.hm.edu/bin/testgen" --output /opt/mmix/bin/testgen
+
+# # Download, build and install testgen unit testing tool (http://mmix.cs.hm.edu/tools/testgen/)
+# RUN mkdir -p /opt/mmix/src \
+#     && curl --silent "http://mmix.cs.hm.edu/src/testgen.l" --output /opt/mmix/src/testgen.l \
+#     && curl --silent "http://mmix.cs.hm.edu/src/symtab.c" --output /opt/mmix/src/symtab.c \
+#     && curl --silent "http://mmix.cs.hm.edu/src/symtab.h" --output /opt/mmix/src/symtab.h \
+#     && cd /opt/mmix/src \
+#     && flex -o testgen.c  testgen.l \
+#     && gcc testgen.c symtab.c -lfl -o testgen \
+#     && mv testgen /opt/mmix/bin
 
 # NOTE: Environment configuration taken from rust.docker
 
