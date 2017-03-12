@@ -1,0 +1,19 @@
+# EXAMPLE USAGE: TBD 
+
+# Pull base image
+FROM codewars/base-runner
+
+# Update repositories and install packages
+RUN apt-get update -qq
+RUN apt-get install -y build-essential checkinstall
+RUN apt-get install -y cmake
+RUN apt-get install -y flex
+
+# Download and install MMIX binaries (http://mmix.cs.hm.edu/bin/
+RUN mkdir -p /opt/mmix/bin
+RUN curl --silent "http://mmix.cs.hm.edu/bin/mmix" --output /opt/mmix/bin/mmix
+RUN curl --silent "http://mmix.cs.hm.edu/bin/mmixal" --output /opt/mmix/bin/mmixal
+RUN curl --silent "http://mmix.cs.hm.edu/bin/mmmix" --output /opt/mmix/bin/mmmix
+RUN curl --silent "http://mmix.cs.hm.edu/bin/mmotype" --output /opt/mmix/bin/mmotype
+RUN chmod --recursive +x /opt/mmix/bin/
+ENV PATH /opt/mmix/bin:$PATH
