@@ -17,3 +17,39 @@ RUN curl --silent "http://mmix.cs.hm.edu/bin/mmmix" --output /opt/mmix/bin/mmmix
 RUN curl --silent "http://mmix.cs.hm.edu/bin/mmotype" --output /opt/mmix/bin/mmotype
 RUN chmod --recursive +x /opt/mmix/bin/
 ENV PATH /opt/mmix/bin:$PATH
+
+# # NOTE: zMMIX not compiling!
+# # Download, build and install zMMIX unit testing suite (https://github.com/zBaitu/zMMIX)
+# RUN cd /opt/mmix \
+#     && git "clone https://github.com/zBaitu/zMMIX.git" \
+#     && mkdir zMMIX/build \
+#     && cd zMMIX/build \
+#     && cmake .. \
+#     && make \
+#     && make install
+
+# NOTE: Environment configuration taken from rust.docker
+
+# Setup env
+ENV USER codewarrior
+ENV HOME /home/codewarrior
+
+# Copy package json to tmp
+ADD package.json /tmp/package.json
+
+# Do npm install in tmp and setup cargo dir
+RUN \
+  cd /tmp && npm install --production && \
+  mkdir -p /runner && cp -a /tmp/node_modules /runner
+
+# ADD cli-runner
+ADD . /runner
+
+# Working dir is /runner
+WORKDIR /runner
+RUN ln -s /home/codewarrior /workspace
+
+# Codewarrior...
+USER codewarrior
+
+# RUN mocha -t 10000 test/runners/mmix_spec.js
