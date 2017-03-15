@@ -1,0 +1,23 @@
+test:
+  algorithms:
+    initial: |-
+      % write 42 to $1
+      SWYM
+
+    answer: |-
+      Usr    SET $1,42
+
+    setup: |-
+      L1     LOC    #100
+      Main   SET $2,42
+
+    fixture: |-
+      L2     CMP  $3,$1,$2
+             BZ   $3,Ok
+      Bad    GETA $255,BadStr
+             JMP  Print
+      Ok     GETA  $255,OkStr
+      Print  TRAP  0,Fputs,StdOut
+             TRAP  0,Halt,0
+      OkStr  BYTE "passed",#a,0
+      BadStr BYTE "failed",#a,0

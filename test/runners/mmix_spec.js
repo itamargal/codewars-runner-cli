@@ -4,7 +4,7 @@ var runner = require('../runner');
 describe('mmix runner', function() {
     describe('.run', function() {
         // TODO:
-        // runner.assertCodeExamples('mmix');
+        runner.assertCodeExamples('mmix');
 
         it('should handle basic code eval', function(done) {
             var solution = `
