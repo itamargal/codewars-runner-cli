@@ -1,0 +1,33 @@
+# RUN-USING:      docker run --rm --name=elm codewars/elm-runner --help
+# EXAMPLE USAGE:  docker run --rm codewars/elm-runner run -l javascript -c "console.log(1+1)"
+# TODO: Change EXAMPLE USAGE
+
+# Pull base image.
+FROM codewars/base-runner
+
+# Install Elm Platform
+RUN npm install elm -g 
+# This pulls in elm-compiler, elm-make, elm-reactor, elm-repl, and elm-package.
+RUN npm install elm-test -g
+
+# add the package json first to a tmp directory and build, copy over so that we dont rebuild every time
+ADD package.json /tmp/package.json
+RUN cd /tmp && npm install && npm install --only=dev && npm dedupe
+RUN mkdir -p /runner && cp -a /tmp/node_modules /runner
+
+# ADD cli-runner and install node deps
+ADD . /runner
+
+RUN ln -s /home/codewarrior /workspace
+
+WORKDIR /runner
+ENV NODE_PATH /usr/lib/node_modules:/runner/node_modules
+
+# Set environment variables
+ENV HOME /home/codewarrior
+USER codewarrior
+ENV USER codewarrior
+
+#timeout is a fallback in case an error with node
+#prevents it from exiting properly
+ENTRYPOINT ["timeout", "15", "node"]
